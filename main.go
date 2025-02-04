@@ -8,32 +8,39 @@ import (
 	"github.com/gorilla/mux"
 )
 
-var task string
+func GetTasks(w http.ResponseWriter, r *http.Request) {
+	var task []Task
+	tasks := DB.Find(&task)
 
-type requestBody struct {
-	Message string `json:"message"`
+	if tasks.Error != nil {
+		http.Error(w, tasks.Error.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprint(w, task)
 }
 
-func taskHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		fmt.Fprintf(w, "Hello %s", task)
-	} else if r.Method == http.MethodPost {
-		dec := json.NewDecoder(r.Body)
+func CreateTask(w http.ResponseWriter, r *http.Request) {
+	var task Task
+	dec := json.NewDecoder(r.Body)
 
-		var m requestBody
-		if err := dec.Decode(&m); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-
-		task = m.Message
-		fmt.Fprint(w, "success")
+	if err := dec.Decode(&task); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
+
+	DB.Create(&task)
+	fmt.Fprint(w, "Задание успешно добавлено")
 }
 
 func main() {
+	InitDB()
+
+	DB.AutoMigrate(&Task{})
+
 	router := mux.NewRouter()
-	router.HandleFunc("/api/task", taskHandler).Methods("GET", "POST")
+	router.HandleFunc("/api/tasks", GetTasks).Methods("GET")
+	router.HandleFunc("/api/tasks", CreateTask).Methods("POST")
 
 	http.ListenAndServe("localhost:8080", router)
 }
