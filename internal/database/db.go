@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"log"
@@ -10,7 +10,8 @@ import (
 var DB *gorm.DB
 
 func InitDB() {
-	dsn := "host=192.168.50.154 user=postgres password=yourpassword dbname=postgres port=5432"
+	// dsn := "host=192.168.50.154 user=postgres password=yourpassword dbname=postgres port=5432"
+	dsn := "host=localhost user=postgres password=yourpassword dbname=postgres port=5432"
 
 	var err error
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
