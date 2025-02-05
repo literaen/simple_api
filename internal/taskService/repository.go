@@ -12,7 +12,7 @@ type TaskRepository interface {
 	GetAllTasks() ([]Task, error)
 
 	// UpdateTaskByID - Передаем id и Task
-	// возвращаем обновленный Task
+	// возвращаем обновленный Task и ошибку
 	UpdateTaskByID(id uint, task Task) (Task, error)
 
 	// DeleteTaskByID - Передаем id для удаления
