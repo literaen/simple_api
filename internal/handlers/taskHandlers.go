@@ -32,7 +32,7 @@ func (h *Handler) PostTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var task taskService.Task
 
 	dec := json.NewDecoder(r.Body)
-	if err := dec.Decode(&dec); err != nil {
+	if err := dec.Decode(&task); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
