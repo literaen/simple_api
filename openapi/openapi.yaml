@@ -92,4 +92,3 @@ components:
           type: string
         is_done:
           type: boolean
-          default: false
