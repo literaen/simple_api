@@ -106,7 +106,7 @@ func (h *Handler) DeleteTasksId(ctx context.Context, request tasks.DeleteTasksId
 	return tasks.DeleteTasksId204Response{}, nil
 }
 
-func NewHandler(service *taskService.TaskService) *Handler {
+func NewTasksHandler(service *taskService.TaskService) *Handler {
 	return &Handler{
 		Service: service,
 	}
