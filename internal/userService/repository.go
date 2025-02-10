@@ -1,12 +1,15 @@
 package userService
 
 import (
+	"simple_api/internal/taskService"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type UserServiceRepository interface {
 	GetUsers() ([]User, error)
+	GetTasksForUser(id uint) ([]taskService.Task, error)
 	PostUser(user *User) error
 	PatchUserByID(id uint, user *User) error
 	DeleteUserByID(id uint) error
@@ -41,6 +44,12 @@ func (u *userServiceRepository) GetUsers() ([]User, error) {
 	var users []User
 	err := u.db.Find(&users).Error
 	return users, err
+}
+
+func (u *userServiceRepository) GetTasksForUser(userID uint) ([]taskService.Task, error) {
+	var tasks []taskService.Task
+	err := u.db.Where("user_id = ?", userID).Find(&tasks).Error
+	return tasks, err
 }
 
 func (u *userServiceRepository) PostUser(user *User) error {

@@ -1,5 +1,7 @@
 package userService
 
+import "simple_api/internal/taskService"
+
 type UserService struct {
 	repo UserServiceRepository
 }
@@ -10,6 +12,10 @@ func NewUserService(repo UserServiceRepository) *UserService {
 
 func (u *UserService) GetUsers() ([]User, error) {
 	return u.repo.GetUsers()
+}
+
+func (u *UserService) GetTasksForUser(id uint) ([]taskService.Task, error) {
+	return u.repo.GetTasksForUser(id)
 }
 
 // func (u *UserService) PostUser(user *User) (*User, error) {

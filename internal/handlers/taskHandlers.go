@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"simple_api/internal/taskService"
 	"simple_api/internal/web/tasks"
 )
@@ -26,7 +27,8 @@ func (h *Handler) GetTasks(_ context.Context, _ tasks.GetTasksRequestObject) (ta
 		task := tasks.Task{
 			Id:     &tsk.ID,
 			Task:   &tsk.Task,
-			IsDone: &tsk.IsDone,
+			IsDone: tsk.IsDone,
+			UserId: &tsk.UserID,
 		}
 		response = append(response, task)
 	}
@@ -35,9 +37,37 @@ func (h *Handler) GetTasks(_ context.Context, _ tasks.GetTasksRequestObject) (ta
 	return response, nil
 }
 
+// func (h *Handler) GetTasksId(_ context.Context, request tasks.GetTasksIdRequestObject) (tasks.GetTasksIdResponseObject, error) {
+// 	// Получение всех задач из сервиса
+// 	userID := request.Id
+
+// 	allTasks, err := h.Service.GetTasksByUserID(userID)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	response := tasks.GetTasksId200JSONResponse{}
+
+// 	for _, tsk := range allTasks {
+// 		task := tasks.Task{
+// 			Id:     &tsk.ID,
+// 			Task:   &tsk.Task,
+// 			IsDone: &tsk.IsDone,
+// 			UserId: &tsk.UserID,
+// 		}
+// 		response = append(response, task)
+// 	}
+
+// 	return response, nil
+// }
+
 func (h *Handler) PostTasks(_ context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
 	// Распаковываем тело запроса напрямую, без декодера!
 	taskRequest := request.Body
+
+	if taskRequest.UserId == nil {
+		return nil, errors.New("trying to create task without user id")
+	}
 
 	if taskRequest.IsDone == nil {
 		defaultIsDone := false
@@ -47,7 +77,8 @@ func (h *Handler) PostTasks(_ context.Context, request tasks.PostTasksRequestObj
 	// Обращаемся к сервису и создаем задачу
 	taskToCreate := taskService.Task{
 		Task:   *taskRequest.Task,
-		IsDone: *taskRequest.IsDone,
+		IsDone: taskRequest.IsDone,
+		UserID: *taskRequest.UserId,
 	}
 	createdTask, err := h.Service.CreateTask(taskToCreate)
 
@@ -58,7 +89,8 @@ func (h *Handler) PostTasks(_ context.Context, request tasks.PostTasksRequestObj
 	response := tasks.PostTasks201JSONResponse{
 		Id:     &createdTask.ID,
 		Task:   &createdTask.Task,
-		IsDone: &createdTask.IsDone,
+		IsDone: createdTask.IsDone,
+		UserId: &createdTask.UserID,
 	}
 	// Просто возвращаем респонс!
 	return response, nil
@@ -69,14 +101,15 @@ func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRe
 	taskID := request.Id
 	taskRequest := request.Body
 
-	if taskRequest.IsDone == nil {
-		defaultIsDone := false
-		taskRequest.IsDone = &defaultIsDone
+	var updatedTask taskService.Task
+	if taskRequest.Task != nil {
+		updatedTask.Task = *taskRequest.Task
 	}
-
-	updatedTask := taskService.Task{
-		Task:   *taskRequest.Task,
-		IsDone: *taskRequest.IsDone,
+	if taskRequest.IsDone != nil {
+		updatedTask.IsDone = taskRequest.IsDone
+	}
+	if taskRequest.UserId != nil {
+		updatedTask.UserID = *taskRequest.UserId
 	}
 
 	updatedTask, err := h.Service.UpdateTaskByID(taskID, updatedTask)
@@ -88,7 +121,8 @@ func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRe
 	response := tasks.PatchTasksId200JSONResponse{
 		Id:     &updatedTask.ID,
 		Task:   &updatedTask.Task,
-		IsDone: &updatedTask.IsDone,
+		IsDone: updatedTask.IsDone,
+		UserId: &updatedTask.UserID,
 	}
 	// Просто возвращаем респонс!
 	return response, nil

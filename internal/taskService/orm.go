@@ -8,5 +8,6 @@ type Task struct {
 	// IsDone bool   `json: "is_done"`
 
 	Task   string `json:"task"`
-	IsDone bool   `json:"is_done"`
+	IsDone *bool  `json:"is_done"`
+	UserID uint   `json:"user_id"`
 }

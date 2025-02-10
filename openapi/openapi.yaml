@@ -36,6 +36,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/Task'
   /tasks/{id}:
+    # get:
+    #   summary: Get all tasks of user
+    #   tags:
+    #     - tasks
+    #   parameters:
+    #     - name: id
+    #       in: path
+    #       description: The ID of the task
+    #       required: true
+    #       schema:
+    #         type: integer
+    #         format: uint
+    #   responses:
+    #     '200':
+    #       description: A list of tasks
+    #       content:
+    #         application/json:
+    #           schema:
+    #             type: array
+    #             items:
+    #               $ref: '#/components/schemas/Task'
     patch:
       summary: Update a task by ID
       tags:
@@ -112,6 +133,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
   /users/{id}:
+    get:
+      summary: Get all tasks of user
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+            format: uint
+      responses:
+        '200':
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
     patch:
       summary: Update a user by ID
       tags:
@@ -167,6 +209,9 @@ components:
           type: string
         is_done:
           type: boolean
+        user_id:
+          type: integer
+          format: uint # так как в БД айди это только положительные числа.
     User:
       type: object
       properties:

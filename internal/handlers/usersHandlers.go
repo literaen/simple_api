@@ -29,6 +29,27 @@ func (u *UsersHandler) GetUsers(ctx context.Context, request users.GetUsersReque
 	return response, nil
 }
 
+// GetUsersId implements users.StrictServerInterface.
+func (u *UsersHandler) GetUsersId(_ context.Context, request users.GetUsersIdRequestObject) (users.GetUsersIdResponseObject, error) {
+	userID := request.Id
+
+	allTasks, err := u.Service.GetTasksForUser(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := make(users.GetUsersId200JSONResponse, 0, len(allTasks))
+	for _, task := range allTasks {
+		response = append(response, users.Task{
+			Id:     &task.ID,
+			IsDone: task.IsDone,
+			Task:   &task.Task,
+			UserId: &userID,
+		})
+	}
+	return response, nil
+}
+
 // PostUsers implements users.StrictServerInterface.
 func (u *UsersHandler) PostUsers(ctx context.Context, request users.PostUsersRequestObject) (users.PostUsersResponseObject, error) {
 	body := request.Body
