@@ -191,11 +191,11 @@ type PatchUsersIdResponseObject interface {
 	VisitPatchUsersIdResponse(w http.ResponseWriter) error
 }
 
-type PatchUsersId201JSONResponse User
+type PatchUsersId200JSONResponse User
 
-func (response PatchUsersId201JSONResponse) VisitPatchUsersIdResponse(w http.ResponseWriter) error {
+func (response PatchUsersId200JSONResponse) VisitPatchUsersIdResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(201)
+	w.WriteHeader(200)
 
 	return json.NewEncoder(w).Encode(response)
 }

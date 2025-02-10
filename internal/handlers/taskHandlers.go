@@ -85,7 +85,7 @@ func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRe
 	}
 
 	// создаем структуру респонс
-	response := tasks.PatchTasksId201JSONResponse{
+	response := tasks.PatchTasksId200JSONResponse{
 		Id:     &updatedTask.ID,
 		Task:   &updatedTask.Task,
 		IsDone: &updatedTask.IsDone,

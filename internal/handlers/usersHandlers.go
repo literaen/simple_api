@@ -65,7 +65,7 @@ func (u *UsersHandler) PatchUsersId(ctx context.Context, request users.PatchUser
 		return nil, err
 	}
 
-	response := users.PatchUsersId201JSONResponse{
+	response := users.PatchUsersId200JSONResponse{
 		Id:       &userID,
 		Email:    &user.Email,
 		Password: &user.Password,

@@ -57,7 +57,7 @@ paths:
             schema:
               $ref: '#/components/schemas/Task'
       responses:
-        '201':
+        '200':
           description: The updated task
           content:
             application/json:
@@ -133,7 +133,7 @@ paths:
             schema:
               $ref: '#/components/schemas/User'
       responses:
-        '201':
+        '200':
           description: The updated user
           content:
             application/json:
