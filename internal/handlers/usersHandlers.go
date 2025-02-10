@@ -10,6 +10,45 @@ type UsersHandler struct {
 	Service *userService.UserService
 }
 
+// GetUsersId implements users.StrictServerInterface.
+func (u *UsersHandler) GetUsersId(_ context.Context, request users.GetUsersIdRequestObject) (users.GetUsersIdResponseObject, error) {
+	userID := request.Id
+
+	user, err := u.Service.GetUserByID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := users.GetUsersId200JSONResponse{users.User{
+		Id:       &user.ID,
+		Email:    &user.Email,
+		Password: &user.Password,
+	}}
+
+	return response, nil
+}
+
+// GetUsersIdTasks implements users.StrictServerInterface.
+func (u *UsersHandler) GetUsersIdTasks(_ context.Context, request users.GetUsersIdTasksRequestObject) (users.GetUsersIdTasksResponseObject, error) {
+	userID := request.Id
+
+	allTasks, err := u.Service.GetTasksForUser(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	response := make(users.GetUsersIdTasks200JSONResponse, 0, len(allTasks))
+	for _, task := range allTasks {
+		response = append(response, users.Task{
+			Id:     &task.ID,
+			IsDone: task.IsDone,
+			Task:   &task.Task,
+			UserId: &userID,
+		})
+	}
+	return response, nil
+}
+
 // GetUsers implements users.StrictServerInterface.
 func (u *UsersHandler) GetUsers(ctx context.Context, request users.GetUsersRequestObject) (users.GetUsersResponseObject, error) {
 	allUsers, err := u.Service.GetUsers()
@@ -30,25 +69,25 @@ func (u *UsersHandler) GetUsers(ctx context.Context, request users.GetUsersReque
 }
 
 // GetUsersId implements users.StrictServerInterface.
-func (u *UsersHandler) GetUsersId(_ context.Context, request users.GetUsersIdRequestObject) (users.GetUsersIdResponseObject, error) {
-	userID := request.Id
+// func (u *UsersHandler) GetUsersId(_ context.Context, request users.GetUsersIdRequestObject) (users.GetUsersIdResponseObject, error) {
+// 	userID := request.Id
 
-	allTasks, err := u.Service.GetTasksForUser(userID)
-	if err != nil {
-		return nil, err
-	}
+// 	allTasks, err := u.Service.GetTasksForUser(userID)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	response := make(users.GetUsersId200JSONResponse, 0, len(allTasks))
-	for _, task := range allTasks {
-		response = append(response, users.Task{
-			Id:     &task.ID,
-			IsDone: task.IsDone,
-			Task:   &task.Task,
-			UserId: &userID,
-		})
-	}
-	return response, nil
-}
+// 	response := make(users.GetUsersId200JSONResponse, 0, len(allTasks))
+// 	for _, task := range allTasks {
+// 		response = append(response, users.Task{
+// 			Id:     &task.ID,
+// 			IsDone: task.IsDone,
+// 			Task:   &task.Task,
+// 			UserId: &userID,
+// 		})
+// 	}
+// 	return response, nil
+// }
 
 // PostUsers implements users.StrictServerInterface.
 func (u *UsersHandler) PostUsers(ctx context.Context, request users.PostUsersRequestObject) (users.PostUsersResponseObject, error) {

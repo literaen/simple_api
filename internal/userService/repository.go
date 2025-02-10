@@ -9,6 +9,7 @@ import (
 
 type UserServiceRepository interface {
 	GetUsers() ([]User, error)
+	GetUserByID(id uint) (User, error)
 	GetTasksForUser(id uint) ([]taskService.Task, error)
 	PostUser(user *User) error
 	PatchUserByID(id uint, user *User) error
@@ -44,6 +45,12 @@ func (u *userServiceRepository) GetUsers() ([]User, error) {
 	var users []User
 	err := u.db.Find(&users).Error
 	return users, err
+}
+
+func (u *userServiceRepository) GetUserByID(id uint) (User, error) {
+	var user User
+	err := u.db.Where("id = ?", id).First(&user).Error
+	return user, err
 }
 
 func (u *userServiceRepository) GetTasksForUser(userID uint) ([]taskService.Task, error) {

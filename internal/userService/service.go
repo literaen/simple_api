@@ -14,6 +14,10 @@ func (u *UserService) GetUsers() ([]User, error) {
 	return u.repo.GetUsers()
 }
 
+func (u *UserService) GetUserByID(id uint) (User, error) {
+	return u.repo.GetUserByID(id)
+}
+
 func (u *UserService) GetTasksForUser(id uint) ([]taskService.Task, error) {
 	return u.repo.GetTasksForUser(id)
 }

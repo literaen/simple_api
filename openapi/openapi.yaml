@@ -134,7 +134,7 @@ paths:
                 $ref: '#/components/schemas/User'
   /users/{id}:
     get:
-      summary: Get all tasks of user
+      summary: Get user data
       tags:
         - users
       parameters:
@@ -147,13 +147,13 @@ paths:
             format: uint
       responses:
         '200':
-          description: A list of tasks
+          description: A data of user
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Task'
+                  $ref: '#/components/schemas/User'
     patch:
       summary: Update a user by ID
       tags:
@@ -197,6 +197,28 @@ paths:
       responses:
         '204':
           description: User deleted
+  /users/{id}/tasks:
+    get:
+      summary: Get all tasks of user
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the user
+          required: true
+          schema:
+            type: integer
+            format: uint
+      responses:
+        '200':
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
 components:
   schemas:
     Task:
