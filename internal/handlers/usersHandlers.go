@@ -43,7 +43,6 @@ func (u *UsersHandler) GetUsersIdTasks(_ context.Context, request users.GetUsers
 			Id:     &task.ID,
 			IsDone: task.IsDone,
 			Task:   &task.Task,
-			UserId: &userID,
 		})
 	}
 	return response, nil
